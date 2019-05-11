@@ -1,4 +1,7 @@
 package com.accenture.adf.newcodington.module16.sample;
+
+import java.text.DecimalFormat;
+
 /**
  * Class to convert one unit into other units of temperature
  */
@@ -30,13 +33,16 @@ public class TemperatureConvertor {
 		catch(NullPointerException ex)
 		{
 			System.out.println(ex.getMessage());
+			throw new NullPointerException(ex.getMessage());
 		}
 		catch(ArithmeticException ex)
 		{
 			System.out.println(ex.getMessage());
-			System.out.println("The temperature remains the same:" + temperature.getTemparature() + "degrees " + temperature.getCurrUOM());
+			System.out.println("The temperature remains the same: " + temperature.getTemparature() + temperature.getCurrUOM());
+			throw new ArithmeticException(ex.getMessage());
 		}
 		conversionMessage="Temperature Converter Initiated:  Temperature Data Received";
+		System.out.println(conversionMessage);
 	}
 	/**
 	 * Method to convert one unit into anathor
@@ -46,38 +52,45 @@ public class TemperatureConvertor {
 	 */
 	public void convertTemperature(Temperature temperature) throws NullPointerException, ArithmeticException
 	{
-		conversionMessage=" Conversion Performed:  Old Temperature = "+temperature.getTemparature()+ " "+ temperature.getNewUOM();
+		conversionMessage="Conversion Performed: Old Temperature = "+temperature.getTemparature()+ temperature.getCurrUOM();
 		
 		switch(temperature.getCurrUOM())
 		{
 		 case 'K':
-			 if(temperature.getNewUOM()=='C')
-				 convertCelsiusToKelvin(temperature);
-			 else if(temperature.getNewUOM()=='F')
+			 if(temperature.getNewUOM()=='C') {
+				 convertKelvinToCelsius(temperature);
+			 }else if(temperature.getNewUOM()=='F') {
 				 convertKelvintoFahrenheit(temperature);
+			 }
 			 break;
 		 case 'C':
-			 if(temperature.getNewUOM()=='K')
+			 if(temperature.getNewUOM()=='K') {
 				 convertCelsiusToKelvin(temperature);
-			 else if(temperature.getNewUOM()=='F')
-				 convertFahrenheitToCelsius(temperature);
+			 }else if(temperature.getNewUOM()=='F') {
+				 convertCelsiusToFahrenheit(temperature);
+			 }
 			 break;
 		 case 'F':
-			 if(temperature.getNewUOM()=='F')
-				 convertKelvintoFahrenheit(temperature);
-			 else if(temperature.getNewUOM()=='F')
+			 if(temperature.getNewUOM()=='K') {
+				 convertFahrenheitToKelvin(temperature);
+			 }else if(temperature.getNewUOM()=='C') {
 				 convertFahrenheitToCelsius(temperature);
+			 }
 			 break;			 
 		}
 		
+		System.out.println(conversionMessage + " New Temperature = " +temperature.getTemparature() + temperature.getNewUOM());
 		if(absoluteZeroCheck(temperature))
 		{
-			conversionMessage+="New Temparature ="+temperature.getTemparature()+" "+temperature.getCurrUOM();
-			System.out.println(conversionMessage);
+//			conversionMessage+="New Temparature ="+temperature.getTemparature()+" "+temperature.getCurrUOM();
+//			System.out.println(conversionMessage);
 			System.out.println("Temperature Below Absolute Zero! Must be reset to Absolute zero.");
 			temperature.setTemparature(0);
 			temperature.setCurrUOM('K');
 			temperature.setNewUOM('K');
+			conversionMessage+=" New Temparature = "+temperature.getTemparature() + temperature.getCurrUOM();
+		}else {
+			conversionMessage+=" New Temparature = "+temperature.getTemparature() + temperature.getNewUOM();
 		}
 		
 		System.out.println("Last Successful Action: "+conversionMessage);				
@@ -93,10 +106,10 @@ public class TemperatureConvertor {
 		float newTemperature;
 		float currTemperatute;
 		currTemperatute=temperature.getTemparature();
-		newTemperature=(5/9)*(currTemperatute+32)-273.15f;
+		newTemperature=(5.0f/9.0f) * (currTemperatute - 32f) + 273.15f;
 		temperature.setTemparature(newTemperature);
-		temperature.setCurrUOM('K');
-		temperature.setNewUOM('F');
+		temperature.setCurrUOM('F');
+		temperature.setNewUOM('K');
 	}
 	/**
 	 * Method to convert Fahrenheit to Celsius
@@ -109,10 +122,10 @@ public class TemperatureConvertor {
 		float newTemperature;
 		float currTemperatute;
 		currTemperatute=temperature.getTemparature();
-		newTemperature=(5/9)*(currTemperatute-32);
-		temperature.setTemparature(currTemperatute);
-		temperature.setCurrUOM('C');
-		temperature.setNewUOM('F');
+		newTemperature=(5.0f/9.0f)*(currTemperatute-32f);
+		temperature.setTemparature(newTemperature);
+		temperature.setCurrUOM('F');
+		temperature.setNewUOM('C');
 	}
 	/**
 	 * Method to convert Celsius to Fahrenheit
@@ -125,10 +138,10 @@ public class TemperatureConvertor {
 		float newTemperature;
 		float currTemperatute;
 		currTemperatute=temperature.getTemparature();
-		newTemperature=(5/9*currTemperatute)+32;
+		newTemperature=((9f/5f)*currTemperatute)+32f;
 		temperature.setTemparature(newTemperature);
-		temperature.setCurrUOM('F');
-		temperature.setNewUOM('C');
+		temperature.setCurrUOM('C');
+		temperature.setNewUOM('F');
 	}
 	/**
 	 * Method to convert Celsius to Kelvin
@@ -141,10 +154,10 @@ public class TemperatureConvertor {
 		float newTemperature;
 		float currTemperatute;
 		currTemperatute=temperature.getTemparature();
-		newTemperature=currTemperatute+273f;
+		newTemperature=currTemperatute+273.15f;
 		temperature.setTemparature(newTemperature);
-		temperature.setCurrUOM('K');
-		temperature.setNewUOM('C');
+		temperature.setCurrUOM('C');
+		temperature.setNewUOM('K');
 	}
 	/**
 	 * Method to convert Kelvin to Fahrenheit 
@@ -157,10 +170,10 @@ public class TemperatureConvertor {
 		float newTemperature;
 		float currTemperatute;
 		currTemperatute=temperature.getTemparature();
-		newTemperature=9/5*(currTemperatute-273.15f)+32;
+		newTemperature=(9.0f/5.0f)*(currTemperatute-273.15f)+32f;
 		temperature.setTemparature(newTemperature);
-		temperature.setCurrUOM('F');
-		temperature.setNewUOM('K');
+		temperature.setCurrUOM('K');
+		temperature.setNewUOM('F');
 	}
 	/**
 	 * Method to convert Kelvin to Celsius 
@@ -168,7 +181,7 @@ public class TemperatureConvertor {
 	 * @throws NullPointerException
 	 * @throws ArithmeticException
 	 */
-	public void convertKelvintoCelsius(Temperature temperature) throws NullPointerException, ArithmeticException
+	public void convertKelvinToCelsius(Temperature temperature) throws NullPointerException, ArithmeticException
 	{
 		float newTemperature;
 		float currTemperatute;
@@ -187,22 +200,25 @@ public class TemperatureConvertor {
 	 */
 	public boolean absoluteZeroCheck(Temperature temperature) throws NullPointerException, ArithmeticException
 	{
-		float currTemperature=temperature.getTemparature();
-		char currUOM=temperature.getCurrUOM();
+		float newTemperature=temperature.getTemparature();
+		char newUOM=temperature.getNewUOM();
 		boolean checkResult=false;
-		switch(currUOM)
+		switch(newUOM)
 		{
 		 case 'C':
-			 if(currTemperature<273.15)
+			 if(newTemperature < -273.15f) {
 				 checkResult=true;
+			 }
 			 	break;
 		 case 'F':
-			 if(currTemperature<549.67)
+			 if(newTemperature < -459.67f) {
 				 checkResult=true;
+			 }
 			 	break;
 		 case 'K':
-			 if(currTemperature<0)
+			 if(newTemperature < 0F) {
 				 checkResult=true;
+			 }
 			 	break;
 		}
 		return checkResult;

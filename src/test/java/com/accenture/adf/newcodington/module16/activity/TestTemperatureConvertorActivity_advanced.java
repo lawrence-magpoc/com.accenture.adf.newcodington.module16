@@ -1,5 +1,7 @@
 package com.accenture.adf.newcodington.module16.activity;
 
+import java.text.DecimalFormat;
+
 import org.junit.Test;
 
 import com.accenture.adf.newcodington.module16.sample.Temperature;
@@ -50,6 +52,12 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		 * 			handle the NullPointerException thrown by the constructor and write an assert statement
 		 * 			to ensure that appropriate exception was thrown.
 		 */	
+		
+		try {
+			convertorSolution = new TemperatureConvertor(null);
+		} catch (NullPointerException e) {
+			assertEquals(e.getMessage(), "The Temperature Object was not found");
+		}
 	}
 	
 	@Test
@@ -59,9 +67,16 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 	 */
 	public void testTemperatureConvertorSolutionTemperature_SameUOM() {
 
+
 		temperature = new Temperature(32f, 'F', 'F');
 
 		// TODO 2 - write an assert statement statement to ensure that required exception is being thrown
+
+		try {
+			convertorSolution = new TemperatureConvertor(temperature);
+		} catch (ArithmeticException e) {
+			assertEquals(e.getMessage(), "No conversion required.  The units of measure are the same.");
+		}
 	}
 	@Test
 	/**
@@ -74,7 +89,9 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 		
 		// TODO 3 - Write assert statements to run the the test conditions 
-	
+		assertTrue(temperature.getCurrUOM() == 'C' 
+				&& temperature.getNewUOM() == 'F'
+				&& temperature.getTemparature() == 122f);
 
 	}
 	@Test
@@ -87,6 +104,9 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 
 		// TODO 4 - Write assert statements to run the the test conditions
+		assertTrue(temperature.getCurrUOM() == 'C' 
+				&& temperature.getNewUOM() == 'K' 
+				&& temperature.getTemparature() == 373.15f);
 	}
 	@Test
 	/**
@@ -98,6 +118,11 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 
 		// TODO 5 - Write assert statements to run the the test conditions
+
+		DecimalFormat df = new DecimalFormat("0.0000");
+		assertTrue(temperature.getCurrUOM() == 'F' 
+				&& temperature.getNewUOM() == 'C' 
+				&& Float.parseFloat(df.format(temperature.getTemparature())) == 100f);
 	}
 	@Test
 	/**
@@ -109,6 +134,9 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 
 		// TODO 6 - Write assert statements to run the the test conditions
+		assertTrue(temperature.getCurrUOM() == 'F' 
+				&& temperature.getNewUOM() == 'K' 
+				&& temperature.getTemparature() == 203.15f);
 	}
 	@Test
 	/**
@@ -120,6 +148,10 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 
 		// TODO 7 - Write assert statements to run the the test conditions
+		DecimalFormat df = new DecimalFormat("0.0000");
+		assertTrue(temperature.getCurrUOM() == 'K' 
+				&& temperature.getNewUOM() == 'C' 
+				&& Float.parseFloat(df.format(temperature.getTemparature())) == 93.85f);
 	}
 	@Test
 	/**
@@ -131,6 +163,10 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 	
 		// TODO 8 - Write assert statements to run the the test conditions
+		DecimalFormat df = new DecimalFormat("0.0000");
+		assertTrue(temperature.getCurrUOM() == 'K' 
+				&& temperature.getNewUOM() == 'F' 
+				&& Float.parseFloat(df.format(temperature.getTemparature())) == -402.07f);
 	}
 	@Test
 	/**
@@ -139,11 +175,14 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 	 */
 	public void testConvertTemperature_Fahrenheit_Celsius_AbsoluteZero() {
 
-		temperature = new Temperature(-459.7f, 'F', 'K');
+		temperature = new Temperature(-459.7f, 'F', 'C');
 		convertorSolution = new TemperatureConvertor();
 		convertorSolution.convertTemperature(temperature);
 	
 		// TODO 9 - Write assert statements to run the the test conditions
+		assertTrue(temperature.getCurrUOM() == 'K' 
+				&& temperature.getNewUOM() == 'K' 
+				&& temperature.getTemparature() == 0f);
 	}
 	@Test
 	/**
@@ -157,6 +196,9 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 		
 		// TODO 10  - Write assert statements to run the the test conditions
+		assertTrue(temperature.getCurrUOM() == 'K' 
+				&& temperature.getNewUOM() == 'K' 
+				&& temperature.getTemparature() == 0f);
 	}
 	@Test
 	/**
@@ -170,6 +212,9 @@ public class TestTemperatureConvertorActivity_advanced extends TestCase {
 		convertorSolution.convertTemperature(temperature);
 	
 		// TODO 11 - Write assert statements to run the the test conditions
+		assertTrue(temperature.getCurrUOM() == 'K' 
+				&& temperature.getNewUOM() == 'K' 
+				&& temperature.getTemparature() == 0f);
 	}
 
 }
